@@ -1,8 +1,7 @@
-module ec.edu.espol.proyecto_toma_decisiones {
+module ec.edu.espol.proyectosegundop {
     requires javafx.controls;
     requires javafx.fxml;
-    requires java.base;
 
-    opens ec.edu.espol.proyecto_toma_decisiones to javafx.fxml;
-    exports ec.edu.espol.proyecto_toma_decisiones;
+    opens ec.edu.espol.proyectosegundop to javafx.fxml;
+    exports ec.edu.espol.proyectosegundop;
 }
