@@ -10,9 +10,12 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
@@ -61,8 +64,10 @@ public class App extends Application {
 
         Label lblPregunta = new Label();
         Button btnSi = new Button("Sí");
+        btnSi.setPrefWidth(100);
         Button btnNo = new Button("No");
-
+        btnNo.setPrefWidth(100);
+        
         btnSi.setOnAction(e -> {
             contadorPreguntas++;
             if (actual.getSi() != null) {
@@ -84,7 +89,15 @@ public class App extends Application {
         });
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(btnCargar, txtPreguntas, btnIniciar, lblPregunta, btnSi, btnNo);
+        HBox cajaSino = new HBox(100);
+        cajaSino.getChildren().addAll(btnSi,btnNo);
+        cajaSino.setSpacing(50);
+        cajaSino.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(btnCargar, txtPreguntas, btnIniciar, lblPregunta, cajaSino);
+        layout.setSpacing(20.0);
+        layout.setAlignment(Pos.CENTER);
+        
+        
         
         Scene scene = new Scene(layout, 400, 300);
         primaryStage.setScene(scene);
@@ -119,3 +132,5 @@ public class App extends Application {
     }
 
 }
+
+//Si se presenta problemas con el compilador de javafx, verificar que module-info y pom.xml tengan la misma ruta como clase main
