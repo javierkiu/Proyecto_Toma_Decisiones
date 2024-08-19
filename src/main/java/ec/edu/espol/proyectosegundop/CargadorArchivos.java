@@ -37,10 +37,10 @@ public class CargadorArchivos {
         return respuestas;
     }
     
-    public static ArbolDecision construirArbol(List<String> preguntas, Map<String, List<String>> respuestas) {
-        ArbolDecision arbol = new ArbolDecision();
+    public static ArbolDesicion<String> construirArbol(List<String> preguntas, Map<String, List<String>> respuestas) {
+        ArbolDesicion arbol = new ArbolDesicion();
         Nodo raiz = new Nodo(preguntas.get(0));
-        arbol.setRaiz(raiz);
+        arbol.setRoot(raiz);
 
         for (Map.Entry<String, List<String>> entrada : respuestas.entrySet()) {
             String animal = entrada.getKey();
@@ -48,14 +48,16 @@ public class CargadorArchivos {
             Nodo actual = raiz;
 
             for (int i = 0; i < resp.size(); i++) {
-                boolean respuesta = resp.get(i).equals("sí");
+                boolean respuesta = resp.get(i).equals("si");
                 if (i == resp.size() - 1) {
                     if (respuesta) {
                         actual.setSi(new Nodo(animal));
-                    } else {
+                    } 
+                    else {
                         actual.setNo(new Nodo(animal));
                     }
-                } else {
+                } 
+                else {
                     if (respuesta) {
                         if (actual.getSi() == null) {
                             actual.setSi(new Nodo(preguntas.get(i + 1)));
@@ -72,6 +74,5 @@ public class CargadorArchivos {
         }
         return arbol;
     }
-    
     
 }

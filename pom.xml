@@ -36,7 +36,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.4</version>
                 <configuration>
-                    <mainClass>ec.edu.espol.proyecto_toma_decisiones.App</mainClass>
+                    <mainClass>ec.edu.espol.proyectosegundop.App</mainClass>
                 </configuration>
                 <executions>
                     <execution>
