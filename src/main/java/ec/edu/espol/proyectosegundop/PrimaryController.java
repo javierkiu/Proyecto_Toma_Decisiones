@@ -8,13 +8,17 @@ import java.util.Map;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -38,12 +42,34 @@ public class PrimaryController {
     
     public void iniciarJuego()throws IOException{ 
        primaryStage.setTitle("Adivina el Animal");
-        Label welcomeLabel=new Label("Bienvenido");
-        welcomeLabel.setStyle("-fx-font-size: 24px;");
+        Label welcomeLabel=new Label("Bienvenido!!!");
+        welcomeLabel.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
         
         // Crea los botones "Cargar preguntas" y "Cargar respuestas"
         Button loadQuestionsButton=new Button("Cargar preguntas");
         Button loadAnswersButton=new Button("Cargar respuestas");
+        loadQuestionsButton.setStyle(
+            "-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 16px; " +
+            "-fx-padding: 10px 20px; -fx-border-radius: 5px; -fx-background-radius: 5px;"
+        );
+        loadAnswersButton.setStyle(
+            "-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-size: 16px; " +
+            "-fx-padding: 10px 20px; -fx-border-radius: 5px; -fx-background-radius: 5px;"
+        );
+        
+        // Carga la imagen y crea un ImageView
+        Image image = new Image("img/upload.png"); // Cambia la ruta por la ubicación de tu imagen
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(80); // Ajusta el ancho de la imagen
+        imageView.setFitHeight(80); // Ajusta la altura de la imagen
+        imageView.setPreserveRatio(true); // Mantiene la proporción de la imagen
+
+        // Crea un contenedor HBox para organizar los botones y la imagen
+        HBox buttonImageBox = new HBox(20);
+        buttonImageBox.getChildren().addAll(loadQuestionsButton, loadAnswersButton, imageView);
+        buttonImageBox.setPadding(new Insets(20, 0, 0, 0));
+        buttonImageBox.setStyle("-fx-alignment: center;");
+
 
         // Configura el FileChooser
         FileChooser fileChooser=new FileChooser();
@@ -86,14 +112,15 @@ public class PrimaryController {
         });
 
         // Crea un VBox para organizar el contenido
-        VBox root=new VBox();
-        root.setStyle("-fx-padding: 20; -fx-alignment: top-center;");
-        root.getChildren().addAll(welcomeLabel, loadQuestionsButton, loadAnswersButton);
+        // Crea un contenedor VBox para organizar la disposición de los elementos
+        VBox root = new VBox(20);
+        root.setStyle("-fx-background-color: #ecf0f1; -fx-padding: 50px; -fx-alignment: center;");
+        root.getChildren().addAll(welcomeLabel, buttonImageBox);
         root.setSpacing(25);
         root.setAlignment(Pos.CENTER);
 
         // Crea una escena con el contenedor y un tamaño mayor
-        Scene scene=new Scene(root, 400, 300);
+        Scene scene=new Scene(root, 600, 400);
 
         // Configura la escena en el escenario
         primaryStage.setScene(scene);
@@ -109,39 +136,70 @@ public class PrimaryController {
     
     private void cantidadPreguntas() {
         Label questionCountLabel = new Label("¿Cuántas preguntas desea responder?");
+        questionCountLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: #34495e; -fx-padding: 10px;");
+
         TextField questionCountField = new TextField();
+        questionCountField.setPromptText("Ingrese un número");
+        questionCountField.setStyle(
+            "-fx-font-size: 16px; -fx-padding: 10px; -fx-border-color: #3498db; " +
+            "-fx-border-radius: 5px; -fx-background-radius: 5px;"
+        );
         Button startGameButton = new Button("Comenzar juego");
+        startGameButton.setStyle(
+            "-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-size: 16px; " +
+            "-fx-padding: 10px 20px; -fx-border-radius: 5px; -fx-background-radius: 5px;"
+        );        
+            startGameButton.setOnAction(event -> {
+                try{
+                    maxQuestions = Integer.parseInt(questionCountField.getText());
+                    questionIndex = 0;
+                    userResponses.clear();
+                    mostrarPregunta(primaryStage);
+                }
+                catch(Exception ex){
+                    Alert a = new Alert(AlertType.ERROR,"Solo numeros");
+                    a.show();
+                }
+            });
 
-        startGameButton.setOnAction(event -> {
-            maxQuestions = Integer.parseInt(questionCountField.getText());
-            questionIndex = 0;
-            userResponses.clear();
-            mostrarPregunta(primaryStage);
-        });
+            VBox layout = new VBox(15);
+            layout.setStyle("-fx-padding: 30; -fx-alignment: center; -fx-background-color: #ecf0f1; " +
+                            "-fx-border-color: #bdc3c7; -fx-border-width: 2px; -fx-border-radius: 10px;");
+            layout.getChildren().addAll(questionCountLabel, questionCountField, startGameButton);
 
-        VBox layout = new VBox(10);
-        layout.setStyle("-fx-padding: 20; -fx-alignment: center; -fx-background-color: white;");
-        layout.getChildren().addAll(questionCountLabel, questionCountField, startGameButton);
 
-        Scene inputScene = new Scene(layout, 400, 300);
-        primaryStage.setScene(inputScene);
+            Scene inputScene = new Scene(layout, 600, 400);
+            primaryStage.setScene(inputScene);      
+        
+
+
     }
     
     private void mostrarPregunta(Stage primaryStage) {
         if (questionIndex < maxQuestions && questionIndex < preguntas.size()) {
             String currentQuestion = preguntas.get(questionIndex);
             Label questionLabel = new Label(currentQuestion);
-            Button yesButton = new Button("si");
-            Button noButton = new Button("no");
+            questionLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: #2c3e50; -fx-padding: 15px;");
 
+            Button yesButton = new Button("si");
+            yesButton.setStyle(
+               "-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 18px; " +
+               "-fx-padding: 10px 20px; -fx-border-radius: 5px; -fx-background-radius: 5px;"
+           );           
+            Button noButton = new Button("no");
+            noButton.setStyle(
+                "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 18px; " +
+                "-fx-padding: 10px 20px; -fx-border-radius: 5px; -fx-background-radius: 5px;"
+            );
             yesButton.setOnAction(e -> respuestaUsuario(primaryStage, "si"));
             noButton.setOnAction(e -> respuestaUsuario(primaryStage, "no"));
 
-            VBox layout = new VBox(10);
-            layout.setStyle("-fx-padding: 20; -fx-alignment: center; -fx-background-color: white;");
+            VBox layout = new VBox(15);
+            layout.setStyle("-fx-padding: 30; -fx-alignment: center; -fx-background-color: #ecf0f1; " +
+                            "-fx-border-color: #bdc3c7; -fx-border-width: 2px; -fx-border-radius: 10px;");
             layout.getChildren().addAll(questionLabel, yesButton, noButton);
 
-            Scene questionScene = new Scene(layout, 400, 300);
+            Scene questionScene = new Scene(layout, 600, 400);
             primaryStage.setScene(questionScene);
         } else {
             resultadoFinal(primaryStage,null);
@@ -185,9 +243,11 @@ public class PrimaryController {
                 imgAnimal = new ImageView(new Image("img/" + foundAnimal + ".jpg"));
             } catch (IllegalArgumentException e) {
                 imgAnimal = new ImageView(new Image("img/questionMark.jpg"));
+                imgAnimal.setFitHeight(50);
+                imgAnimal.setFitWidth(50);
             }
-            imgAnimal.setFitHeight(150);
-            imgAnimal.setFitWidth(150);
+                imgAnimal.setFitHeight(200);
+                imgAnimal.setFitWidth(200);
         } 
         else if (questionIndex == preguntas.size()) {
             resultMessage = "El animal que pensaste es: " + findMatchingAnimal();
@@ -210,7 +270,7 @@ public class PrimaryController {
             Label lblPosiblesAnimales = new Label(posiblesRespuestas.toString());
             layout.getChildren().addAll(lblPosible,lblPosiblesAnimales);
         }
-        Scene resultScene = new Scene(layout, 400, 300);
+        Scene resultScene = new Scene(layout, 600, 400);
         primaryStage.setScene(resultScene);
     }
     
