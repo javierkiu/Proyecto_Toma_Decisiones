@@ -185,9 +185,9 @@ public class PrimaryController {
                 imgAnimal = new ImageView(new Image("img/" + foundAnimal + ".jpg"));
             } catch (IllegalArgumentException e) {
                 imgAnimal = new ImageView(new Image("img/questionMark.jpg"));
-                imgAnimal.setFitHeight(150);
-                imgAnimal.setFitWidth(150);
             }
+            imgAnimal.setFitHeight(150);
+            imgAnimal.setFitWidth(150);
         } 
         else if (questionIndex == preguntas.size()) {
             resultMessage = "El animal que pensaste es: " + findMatchingAnimal();
