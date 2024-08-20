@@ -8,10 +8,13 @@ import java.util.Map;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -86,6 +89,8 @@ public class PrimaryController {
         VBox root=new VBox();
         root.setStyle("-fx-padding: 20; -fx-alignment: top-center;");
         root.getChildren().addAll(welcomeLabel, loadQuestionsButton, loadAnswersButton);
+        root.setSpacing(25);
+        root.setAlignment(Pos.CENTER);
 
         // Crea una escena con el contenedor y un tamaño mayor
         Scene scene=new Scene(root, 400, 300);
@@ -172,21 +177,55 @@ public class PrimaryController {
     // Muestra el resultado final
     private void resultadoFinal(Stage primaryStage, String foundAnimal) {
         String resultMessage;
-
+        List<String> posiblesRespuestas = new ArrayList<>();
+        ImageView imgAnimal = null;
         if (foundAnimal != null) {
-        resultMessage = "El animal que pensaste es: " + foundAnimal;
+            resultMessage = "El animal que pensaste es: " + foundAnimal;
+            try {
+                imgAnimal = new ImageView(new Image("img/" + foundAnimal + ".jpg"));
+            } catch (IllegalArgumentException e) {
+                imgAnimal = new ImageView(new Image("img/questionMark.jpg"));
+                imgAnimal.setFitHeight(150);
+                imgAnimal.setFitWidth(150);
+            }
         } 
         else if (questionIndex == preguntas.size()) {
             resultMessage = "El animal que pensaste es: " + findMatchingAnimal();
         } 
         else {
             resultMessage = "Fin del juego. No se encontró un animal que coincida con las respuestas.";
+            posiblesRespuestas = arregloAnimalesPosibles();
         }
         Label resultLabel = new Label(resultMessage);
         VBox layout = new VBox(10);
         layout.setStyle("-fx-padding: 20; -fx-alignment: center; -fx-background-color: white;");
         layout.getChildren().addAll(resultLabel);
+        if(imgAnimal != null)
+        {
+            layout.getChildren().addAll(imgAnimal);
+        }
+        if(!posiblesRespuestas.isEmpty())
+        {
+            Label lblPosible = new Label("Posibles animales:");
+            Label lblPosiblesAnimales = new Label(posiblesRespuestas.toString());
+            layout.getChildren().addAll(lblPosible,lblPosiblesAnimales);
+        }
         Scene resultScene = new Scene(layout, 400, 300);
         primaryStage.setScene(resultScene);
-     }
+    }
+    
+    private List<String> arregloAnimalesPosibles()
+    {
+        List<String> arregloAnimalesPosibles = new ArrayList<>();
+        for (Map.Entry<String, List<String>> entry : respuestas.entrySet()) 
+        {
+            List<String> subListaRespuestas = entry.getValue().subList(0, userResponses.size());
+            if (subListaRespuestas.equals(userResponses)) 
+            {
+                arregloAnimalesPosibles.add(entry.getKey());
+            }
+        }
+        return arregloAnimalesPosibles;
+    }
+    
 }
